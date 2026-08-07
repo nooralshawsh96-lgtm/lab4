@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إنشاء حساب جديد - نظام إدارة المعامل</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* --- الخلفية التقنية المتطابقة تماماً لصفحة الدخول --- */
+        body.auth-page {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #050b14 0%, #0f172a 50%, #020617 100%);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #050b14 0%, #0f172a 50%, #020617 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* شبكة رقمية تقنية دقيقة في الخلفية */
+        body.auth-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 45px 45px;
+            z-index: 1;
+        }
+
+        /* --- الصندوق المعدني الزجاجي الفاخر --- */
+        .auth-card {
+            position: relative;
+            z-index: 2;
+            width: 520px;
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.35);
+            border-radius: 24px;
+            padding: 30px 48px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(37, 99, 235, 0.2);
+            text-align: center;
+            direction: rtl;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- أيقونة التروس العلوية المضيئة --- */
+        .auth-logo-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 12px auto;
+            background: radial-gradient(circle, #3b82f6 0%, #1e3a8a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+            border: 2px solid #60a5fa;
+            font-size: 28px;
+        }
+
+        /* --- النصوص --- */
+        .auth-card h2 {
+            margin: 0 0 4px 0;
+            color: #f8fafc;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+
+        /* --- حقول الإدخال --- */
+        .input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #334155;
+            border-radius: 35px;
+            background-color: rgba(15, 23, 42, 0.85);
+            color: #f8fafc;
+            font-size: 13px;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: #64748b;
+        }
+
+        .input-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- زر إنشاء الحساب --- */
+        .btn-auth {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #60a5fa;
+            border-radius: 35px;
+            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            margin-top: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-auth:hover {
+            background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        /* --- روابط التذييل السفلي --- */
+        .auth-footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        .auth-footer-links span {
+            color: #94a3b8;
+        }
+
+        .auth-footer-links a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .auth-footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="auth-page">
+    
+    <div class="auth-card">
+        <div class="auth-logo-icon">🚀</div>
+        
+        <h2>إنشاء حساب جديد</h2>
+        <p class="auth-subtitle">أنشئ حسابك الآن للوصول إلى كافة ميزات النظام</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="input-group">
+                <label>الاسم الأول</label>
+                <input type="text" name="first_name" placeholder="الاسم الأول" required>
+            </div>
+
+            <div class="input-group">
+                <label>الاسم الأخير</label>
+                <input type="text" name="last_name" placeholder="الاسم الأخير" required>
+            </div>
+            
+            <div class="input-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+            </div>
+            
+            <div class="input-group">
+                <label>كلمة المرور</label>
+                <input type="password" name="password" placeholder="كلمة المرور" required>
+            </div>
+            
+            <button type="submit" class="btn-auth">تسجيل الحساب</button>
+        </form>
+        
+        <div class="auth-footer-links">
+            <span>لديك حساب بالفعل؟</span>
+            <a href="{% url 'login' %}">تسجيل الدخول</a>
+        </div>
+    </div>
+
+</body>
+</html>

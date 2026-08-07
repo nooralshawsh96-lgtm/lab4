@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>بوابة الطالب - نظام إدارة المعامل</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #0f172a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #38bdf8;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .no-data {
+            color: #94a3b8;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>مرحباً بكِ في بوابة الطالب</h1>
+        <p>من هنا يمكنك متابعة حجوزات المعامل والأجهزة الخاصة بك.</p>
+
+        <h3 style="margin-top: 30px; text-align: right; color: #f8fafc;">حجوزاتك الحالية:</h3>
+        
+        {% if bookings %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>اسم المعمل</th>
+                        <th>تاريخ الحجز</th>
+                        <th>وقت الجلسة</th>
+                        <th>تاريخ الطلب</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.lab_name }}</td>
+                        <td>{{ booking.booking_date }}</td>
+                        <td>{{ booking.time_slot }}</td>
+                        <td>{{ booking.created_at|date:"Y-m-d" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">لا توجد لديكِ أي حجوزات مسجلة حالياً.</p>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'dashboard' %}" class="btn">العودة إلى الرئيسية</a>
+    </div>
+
+</body>
+</html>

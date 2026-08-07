@@ -1,0 +1,147 @@
+* {
+    box-sizing: border-box;
+}
+
+/* --- الخلفية السينمائية الكاملة --- */
+body.auth-page {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1920');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+/* طبقة عتمة خفيفة جداً لبروز الصندوق */
+body.auth-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 15, 30, 0.35);
+    z-index: 1;
+}
+
+/* --- الصندوق المعدني الفضي الفاخر --- */
+.auth-card {
+    position: relative;
+    z-index: 2;
+    width: 540px;
+    background: linear-gradient(180deg, #f8fafc 0%, #d1d5db 60%, #9ca3af 100%);
+    border: 2.5px solid #64748b;
+    border-radius: 26px;
+    padding: 40px 50px;
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.85), inset 0 2px 4px rgba(255, 255, 255, 0.95);
+    text-align: center;
+    direction: rtl;
+}
+
+/* --- أيقونة التروس المعدنية --- */
+.auth-logo-icon {
+    width: 78px;
+    height: 78px;
+    margin: 0 auto 15px auto;
+    background: radial-gradient(circle, #64748b 0%, #1e293b 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+    border: 3px solid #cbd5e1;
+    font-size: 36px;
+}
+
+/* --- النصوص --- */
+.auth-card h2 {
+    margin: 0 0 4px 0;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.auth-subtitle {
+    color: #334155;
+    font-size: 14px;
+    margin-bottom: 28px;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+/* --- حقول الإدخال ذات الإطار البرونزي المعدني المجوف --- */
+.input-group input {
+    width: 100%;
+    padding: 14px 22px;
+    border: 2.5px solid #8c7a6b;
+    border-radius: 35px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-size: 14px;
+    outline: none;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.18), 0 2px 4px rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #2563eb;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 12px rgba(37, 99, 235, 0.5);
+}
+
+/* --- زر تسجيل الدخول الأزرق البارز --- */
+.btn-auth {
+    width: 100%;
+    padding: 14px;
+    border: 1.5px solid #1e40af;
+    border-radius: 35px;
+    background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(29, 78, 216, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    margin-top: 10px;
+    transition: filter 0.2s;
+}
+
+.btn-auth:hover {
+    filter: brightness(1.1);
+}
+
+/* --- روابط التذييل السفلي (اليمين: نسيت كلمة المرور، اليسار: إنشاء حساب جديد) --- */
+.auth-footer-links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-top: 24px;
+}
+
+.auth-footer-links a {
+    color: #1e293b;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+
+.auth-footer-links a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
