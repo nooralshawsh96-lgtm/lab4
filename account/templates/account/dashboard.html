@@ -3,6 +3,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - نظام إدارة المعامل</title>
     <style>
         * {
@@ -99,6 +100,18 @@
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
+        /* تنسيق زر الفورم الجديد في الشريط العلوي */
+        .nav-links li a.btn-booking-nav {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            font-weight: 700;
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .nav-links li a.btn-booking-nav:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
         .header-left {
             display: flex;
             align-items: center;
@@ -109,6 +122,29 @@
             color: #cbd5e1;
             font-size: 13px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-badge-admin {
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .role-badge-user {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
         }
 
         .btn-quick-action {
@@ -293,15 +329,23 @@
 
             <ul class="nav-links">
                 <li class="active"><a href="{% url 'dashboard' %}">الرئيسية</a></li>
-                <!-- ربط زر بوابة الطالب بالمسار الجديد -->
-                <li><a href="{% url 'student_dashboard' %}">بوابة الطالب (حجز)</a></li>
+                <li><a href="/student/">بوابة الطالب</a></li>
+                <!-- زر حجز المعمل الجديد المضاف باحترافية -->
+                <li><a href="{% url 'student_booking' %}" class="btn-booking-nav">📝 تقديم طلب حجز معمل</a></li>
                 <li><a href="#">بوابة الأستاذ (الجلسات)</a></li>
                 <li><a href="#">بوابة الفني (الأعطال)</a></li>
                 <li><a href="#">سجل الحضور (QR)</a></li>
             </ul>
 
             <div class="header-left">
-                <span class="user-welcome">مرحباً بك، Admin</span>
+                <span class="user-welcome">
+                    مرحباً بك، {{ request.user.username }}
+                    {% if request.user.is_superuser %}
+                        <span class="role-badge-admin">مدير النظام</span>
+                    {% else %}
+                        <span class="role-badge-user">مستخدم عادي</span>
+                    {% endif %}
+                </span>
                 <a href="#" class="btn-quick-action">خروج</a>
             </div>
         </header>
@@ -318,7 +362,7 @@
             </div>
         </section>
 
-        <!-- القسم الثابت (المعامل الأساسية الثلاثة: تقنية المعلومات، الأمن السيبراني، الذكاء الاصطناعي) -->
+        <!-- القسم الثابت (المعامل الأساسية الثلاثة) -->
         <div class="labs-showcase-title">استعراض المعامل الجامعية الأساسية</div>
         <div class="labs-grid">
             <!-- معمل تقنية المعلومات -->
@@ -367,7 +411,7 @@
             </div>
         </div>
 
-        <!-- القسم الديناميكي (المعامل المضافة من قاعدة البيانات في الأسفل) -->
+        <!-- القسم الديناميكي (المعامل المضافة من قاعدة البيانات في الشبكة) -->
         <div class="labs-showcase-title">إدارة المعامل والفروع (مضافة من قاعدة البيانات)</div>
         <div class="labs-grid">
             {% for lab in labs_list %}
@@ -394,7 +438,79 @@
             {% endfor %}
         </div>
 
+        <!-- قسم قائمة المعامل الإضافية بالتفاصيل النصية -->
+        <div class="labs-container" style="background: rgba(15, 23, 42, 0.9); padding: 20px; border-radius: 15px; margin: 20px auto; color: white; width: 100%;">
+            <h3 style="border-right: 4px solid #6366f1; padding-right: 10px; margin-bottom: 20px; font-size: 16px;">قائمة المعامل الجامعية المفصلة</h3>
+            <ul style="list-style: none; padding: 0;">
+                {% for lab in labs_list %}
+                    <li style="background: #1e293b; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #334155;">
+                        <strong>اسم المعمل:</strong> {{ lab.branch_name }} <br>
+                        <strong>الرمز:</strong> {{ lab.branch_code }} <br>
+                        <strong>السعة:</strong> {{ lab.capacity }} طلاب <br>
+                        <strong>الحالة:</strong> {% if lab.is_active %} <span style="color: #10b981;">نشط</span> {% else %} <span style="color: #ef4444;">غير نشط</span> {% endif %}
+                    </li>
+                {% empty %}
+                    <p style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد معامل مضافة حالياً في قاعدة البيانات.</p>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- 🌟 صندوق تقرير دوال الـ QuerySet في أسفل الصفحة بعرض الشاشة بالكامل -->
+        <div class="row mt-5 mb-5" style="width: 100%; margin-top: 30px;">
+            <div class="col-12" style="width: 100%;">
+                <div style="background: #1e293b; border: 1px solid #334155; padding: 30px; border-radius: 20px; direction: rtl; text-align: right;">
+                    <h3 style="color: #818cf8; margin-bottom: 20px; font-size: 20px;">📊 تقرير تنفيذ دوال الـ QuerySet (من قاعدة البيانات):</h3>
+                    <ul style="list-style-type: none; padding: 0; color: #cbd5e1; font-size: 15px; line-height: 2.5; margin: 0;">
+                        <li>✅ <b>1. LabBranch.objects.all()</b> ➔ إجمالي المعامل الكلي من قاعدة البيانات = <b style="color: #4ade80;">{{ labs_list.count }}</b></li>
+                        <li>✅ <b>2. LabBranch.objects.filter(is_active=True)</b> ➔ عدد المعامل النشطة = <b style="color: #4ade80;">{{ active_labs.count }}</b></li>
+                        <li>✅ <b>3. LabBranch.objects.exclude(...)</b> ➔ المعامل المستبعدة = <b style="color: #4ade80;">{{ exclude_labs.count }}</b></li>
+                        <li>✅ <b>4. LabBranch.objects.order_by(...)</b> ➔ تم ترتيب المعامل بنجاح.</li>
+                        <li>✅ <b>5. LabBranch.objects.count()</b> ➔ العداد الكلي بالسجلات = <b style="color: #4ade80;">{{ labs_count }}</b></li>
+                        <li>✅ <b>6. LabBranch.objects.first()</b> ➔ أول معمل مسجل = <b style="color: #4ade80;">{{ first_lab.branch_name }}</b></li>
+                        <li>✅ <b>7. LabBranch.objects.get(pk=1)</b> ➔ المعمل المحدد (ID=1) = <b style="color: #4ade80;">{{ specific_lab.branch_name }}</b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- نهاية الحاوية الرئيسية main-container -->
+
+    <!-- زر الشات/الفلتر العائم -->
+    <button onclick="toggleChat()" style="position: fixed; bottom: 30px; left: 30px; background: #6366f1; color: white; border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 22px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); z-index: 999; display: flex; align-items: center; justify-content: center;">💬</button>
+
+    <!-- نافذة الشات التفاعلي -->
+    <div id="chat-popup" style="display: none; position: fixed; bottom: 100px; left: 30px; width: 320px; background: #1e293b; border: 1px solid #6366f1; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); z-index: 1000;">
+        <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #fff; border-bottom: 1px solid #334155; padding-bottom: 8px;">مساعد المعامل الذكي</div>
+        <div id="chat-messages" style="height: 180px; overflow-y: scroll; margin-bottom: 15px; padding: 10px; background: #0f172a; border-radius: 10px; color: #fff; font-size: 12.5px;">
+            <div style="color: #818cf8; margin-bottom: 5px;">النظام: أهلاً بك! اكتب اسم المعمل أو استفسارك للبحث عنه فوراً.</div>
+        </div>
+        <input type="text" id="chat-input" placeholder="اكتب بحثك هنا..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #475569; background: #334155; color: white; margin-bottom: 10px; font-size: 13px;">
+        <button onclick="sendChatMessage()" style="width: 100%; padding: 10px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;">إرسال وبحث</button>
     </div>
 
+    <!-- كود الـ JavaScript للتحكم بالشات -->
+    <script>
+    function toggleChat() {
+        let popup = document.getElementById('chat-popup');
+        popup.style.display = (popup.style.display === 'none') ? 'block' : 'none';
+    }
+
+    function sendChatMessage() {
+        let inputField = document.getElementById('chat-input');
+        let message = inputField.value.trim();
+        if (!message) return;
+        
+        let chatBox = document.getElementById('chat-messages');
+        chatBox.innerHTML += `<div style="text-align: right; margin-bottom: 8px; color: #cbd5e1;">أنت: ${message}</div>`;
+        
+        fetch(`/chatbot-api/?q=${encodeURIComponent(message)}`)
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += `<div style="text-align: left; margin-bottom: 8px; color: #818cf8;">النظام: ${data.reply}</div>`;
+                inputField.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+    }
+    </script>
 </body>
 </html>

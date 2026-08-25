@@ -55,10 +55,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-     'account',
+    'account',
     'branches',
     'student_portal',
 ]
+
 ROOT_URLCONF = 'mangestudents.urls'
 
 TEMPLATES = [
@@ -81,14 +82,16 @@ WSGI_APPLICATION = 'mangestudents.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mangstudents_db',          # اسم قاعدة البيانات التي أنشأتيها
+        'USER': 'postgres',         # اسم المستخدم (غالباً postgres)
+        'PASSWORD': 'noor1031',   # كلمة المرور الخاصة بك
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

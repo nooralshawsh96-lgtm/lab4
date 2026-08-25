@@ -1,27 +1,179 @@
+{% load my_filters %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <title>تفاصيل {{ lab.branch_name }}</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f172a; color: #fff; text-align: center; padding: 50px; }
-        .card { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 600px; margin: auto; border: 1px solid #6366f1; }
-        img { width: 100%; height: 300px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: #0f172a; 
+            color: #fff; 
+            text-align: center; 
+            padding: 40px 20px; 
+        }
+        .card { 
+            background: #1e293b; 
+            padding: 30px; 
+            border-radius: 20px; 
+            max-width: 600px; 
+            margin: 20px auto; 
+            border: 1px solid #6366f1; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        img { 
+            width: 100%; 
+            height: 300px; 
+            object-fit: cover; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
+        }
         h1 { margin-bottom: 10px; color: #818cf8; }
-        p { color: #94a3b8; line-height: 1.6; margin-bottom: 20px; }
-        a { background: #6366f1; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 10px; display: inline-block; }
+        h2 { color: #818cf8; font-size: 1.2rem; margin-top: 15px; }
+        p { color: #94a3b8; line-height: 1.6; margin-bottom: 15px; }
+        a, .btn-submit { 
+            background: #6366f1; 
+            color: #fff; 
+            padding: 10px 20px; 
+            text-decoration: none; 
+            border-radius: 10px; 
+            display: inline-block; 
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        a:hover, .btn-submit:hover { background: #4f46e5; }
+        
+        /* تنسيق نموذج التكليف (Form) ليناسب تصميمك الداكن */
+        .form-group { text-align: right; margin-bottom: 15px; }
+        .form-group label { display: block; color: #cbd5e1; margin-bottom: 5px; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        /* تنسيق كود الشات بوت */
+        .chat-box-container { 
+            margin: 30px auto; 
+            padding: 20px; 
+            border: 1px solid #334155; 
+            border-radius: 15px; 
+            background: #1e293b; 
+            max-width: 600px;
+        }
+        #chat-messages { 
+            height: 180px; 
+            overflow-y: auto; 
+            margin-bottom: 15px; 
+            padding: 10px; 
+            background: #0f172a; 
+            border: 1px solid #334155; 
+            border-radius: 10px;
+            text-align: right;
+        }
+        .chat-input-group { display: flex; gap: 10px; }
+        #chat-input { 
+            flex: 1; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #475569; 
+            background: #0f172a; 
+            color: #fff; 
+        }
+        .chat-btn { 
+            background: #6366f1; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+        }
     </style>
 </head>
 <body>
+
+    <!-- 1. بطاقة تفاصيل المعمل الأصلية الخاصة بكِ -->
     <div class="card">
         {% if lab.image %}
             <img src="{{ lab.image.url }}" alt="{{ lab.branch_name }}">
         {% endif %}
-        <h1>{{ lab.branch_name }}</h1>
+        
+        <h1>{{ lab.branch_name | upper_text }}</h1>
         <p><strong>كود المعمل:</strong> {{ lab.branch_code }}</p>
         <p><strong>الوصف:</strong> {{ lab.description }}</p>
+        <p><strong>السعة الاستيعابية:</strong> {{ lab.capacity }} طالب</p>
         <p><strong>الحالة:</strong> {% if lab.is_active %}متاح للحجز{% else %}صيانة{% endif %}</p>
+
+        <!-- إضافة عرض بيانات العلاقات المطلوبة في التكليف (OneToOne & ManyToMany) إن وجدت -->
+        {% if lab.labspecification %}
+            <hr style="border-color: #334155; margin: 15px 0;">
+            <h2>مواصفات الأجهزة (One-to-One):</h2>
+            <p>عدد الأجهزة: {{ lab.labspecification.pc_count }} | نظام التشغيل: {{ lab.labspecification.os_system }}</p>
+        {% endif %}
+
+        {% if lab.students.all %}
+            <hr style="border-color: #334155; margin: 15px 0;">
+            <h2>الطلاب المسجلون (Many-to-Many):</h2>
+            <p>
+                {% for student in lab.students.all %}
+                    <span style="background: #334155; padding: 3px 8px; border-radius: 5px; font-size: 0.9rem;">{{ student.full_name }}</span>
+                {% endfor %}
+            </p>
+        {% endif %}
+
+        <br>
         <a href="{% url 'dashboard' %}">العودة إلى لوحة التحكم</a>
     </div>
+
+    <!-- 2. إضافة نموذج التكليف (Form) مع الحماية بـ POST و CSRF -->
+    {% if form %}
+    <div class="card">
+        <h1>إضافة / تعديل معمل (Form)</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">حفظ البيانات</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- 3. كود الشات بوت الخاص بكِ بنفس منطق العمل -->
+    <div class="chat-box-container">
+        <h3 style="color: #818cf8; margin-top: 0; text-align: right;">المساعد الذكي للمعامل</h3>
+        <div id="chat-messages">
+            <div style="color: #818cf8;">النظام: أهلاً بك! اكتب ما تبحث عنه وسأرد عليك فوراً.</div>
+        </div>
+        
+        <div class="chat-input-group">
+            <input type="text" id="chat-input" placeholder="اكتب استفسارك هنا...">
+            <button class="chat-btn" onclick="sendChatMessage()">إرسال</button>
+        </div>
+    </div>
+
+    <!-- 4. كود الـ JavaScript الخاص بكِ بدون تغيير في المنطق -->
+    <script>
+    function sendChatMessage() {
+        let inputField = document.getElementById('chat-input');
+        let message = inputField.value.trim();
+        if (!message) return;
+        
+        let chatBox = document.getElementById('chat-messages');
+        chatBox.innerHTML += `<div style="text-align: left; color: #cbd5e1; margin: 5px 0;">أنت: ${message}</div>`;
+        
+        fetch(`/chatbot-api/?q=${encodeURIComponent(message)}`)
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += `<div style="text-align: right; color: #818cf8; margin: 5px 0;">النظام: ${data.reply}</div>`;
+                inputField.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+    }
+    </script>
+
 </body>
 </html>

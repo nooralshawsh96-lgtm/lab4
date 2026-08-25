@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from .models import LabBooking
 
-def student_dashboard(request):
-    # جلب كل الحجوزات للتأكد من ظهورها
+def student_portal_view(request):  # غيرنا الاسم هنا ليطابق الـ urls.py
     bookings = LabBooking.objects.all()
     
     context = {

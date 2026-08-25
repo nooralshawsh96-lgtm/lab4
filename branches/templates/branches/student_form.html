@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>بوابة حجز المعامل</title>
+    <style>
+        body { background: #0f172a; color: white; font-family: Tahoma; padding: 40px; }
+        .box { max-width: 500px; margin: auto; background: #1e293b; padding: 30px; border-radius: 15px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; background: #0f172a; color: white; border: 1px solid #475569; border-radius: 5px; box-sizing: border-box; }
+        button { background: #6366f1; color: white; padding: 12px; width: 100%; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .alert { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; font-weight: bold; }
+        label { font-size: 14px; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>استمارة حجز معمل طلابي</h2>
+
+        <!-- رسالة النجاح الفورية -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label>اسم الطالب:</label>
+            {{ form.student_name }}
+
+            <label>الرقم الجامعي:</label>
+            {{ form.student_id }}
+
+            <label>اسم المعمل المطلوب:</label>
+            {{ form.lab_name }}
+
+            <label>تاريخ الحجز:</label>
+            {{ form.booking_date }}
+
+            <label>ملاحظات:</label>
+            {{ form.notes }}
+
+            <button type="submit">إرسال الطلب لقاعدة البيانات</button>
+        </form>
+    </div>
+
+</body>
+</html>
